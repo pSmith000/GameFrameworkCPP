@@ -36,7 +36,7 @@ void Game::run()
 {
 	start();
 
-	while (!_gameOver && !RAYLIB_H::WindowShouldClose())
+	while (!m_gameOver && !RAYLIB_H::WindowShouldClose())
 	{
 		draw();
 		update();

@@ -1,13 +1,15 @@
 #pragma once
 class Game
 {
-private:
-	bool _gameOver;
-
 public:
+	void run();
+
+private:
 	void start();
 	void update();
 	void draw();
 	void end();
-	void run();
+
+private:
+	bool m_gameOver = false;
 };
