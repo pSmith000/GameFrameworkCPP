@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "raylib.h"
+#include "Player.h"
 
 bool Game::m_gameOver = false;
 Scene** Game::m_scenes = new Scene*;
@@ -25,7 +26,10 @@ void Game::start()
 	m_camera->offset = { (float)screenWidth / 2, (float)screenHeight / 2 };
 	m_camera->target = { (float)screenWidth / 2, (float)screenHeight / 2 };
 	m_camera->zoom = 1;
-
+	Player* player = new Player(10, 10, 5, "Images/player.png");
+	Scene* scene = new Scene();
+	scene->addActor(player);
+	addScene(scene);
 	SetTargetFPS(60);
 }
 
@@ -42,7 +46,7 @@ void Game::draw()
 	BeginDrawing();
 
 	BeginMode2D(*m_camera);
-	ClearBackground(RAYWHITE);
+	ClearBackground(BLACK);
 
 	for (int i = 0; i < m_sceneCount; i++)
 	{

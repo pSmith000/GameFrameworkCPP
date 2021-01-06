@@ -194,7 +194,7 @@ void Actor::rotate(float radians)
 
 void Actor::translate(MathLibrary::Vector2 value)
 {
-    *m_translation = *m_translation * MathLibrary::Matrix3::createTranslation(value);
+    *m_translation = *m_translation * MathLibrary::Matrix3::createTranslation(value * 5);
 }
 
 void Actor::lookAt(MathLibrary::Vector2 position)
@@ -243,7 +243,7 @@ void Actor::update(float deltaTime)
 
 void Actor::draw()
 {
-    DrawCircle(getWorldPosition().x * 32, getWorldPosition().y * 32, 50, BLUE);
+    //DrawCircle(getWorldPosition().x * 32, getWorldPosition().y * 32, 50, BLUE);
     //Draws the actor and a line indicating it facing to the raylib window
     DrawLine(
         (int)(getWorldPosition().x * 32),
