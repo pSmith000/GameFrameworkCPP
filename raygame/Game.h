@@ -1,5 +1,6 @@
 #pragma once
 #include "Scene.h"
+class Camera2D;
 
 static class Game
 {
@@ -73,8 +74,7 @@ private:
 	void end();
 
 private:
-    Scene scene1 = Scene();
-    Actor* actor;
+    Camera2D* m_camera;
     static bool m_gameOver;
 	static Scene** m_scenes;
     static int m_sceneCount;

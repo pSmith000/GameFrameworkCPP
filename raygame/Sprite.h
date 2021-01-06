@@ -22,22 +22,22 @@ public:
     /// <summary>
     /// Returns the width of the Sprite
     /// </summary>
-    int getWidth() { return m_width; }
+    int getWidth();
 
     /// <summary>
     /// Returns the width of the Sprite
     /// </summary>
-    void setWidth(int value) { m_width = value; }
+    void setWidth(int value);
 
     /// <summary>
     /// Returns the height of the Sprite
     /// </summary>
-    int getHeight() { return m_height; }
+    int getHeight();
 
     /// <summary>
     /// Returns the height of the Sprite
     /// </summary>
-    void setHeight(int value) { m_height = value; }
+    void setHeight(int value);
 
     /// <summary>
     /// Draws the sprite using the rotation, translation, and scale
@@ -48,7 +48,5 @@ public:
 
 private:
     Texture2D* m_texture;
-    int m_width;
-    int m_height;
 };
 

@@ -6,18 +6,27 @@ Scene** Game::m_scenes = new Scene*;
 int Game::m_sceneCount = 0;
 int Game::m_currentSceneIndex = 0;
 
+
+Game::Game()
+{
+	m_gameOver = false;
+	m_scenes = new Scene*;
+	m_camera = new Camera2D();
+	m_currentSceneIndex = 0;
+	m_sceneCount = 0;
+}
+
 void Game::start()
 {
-	int screenWidth = 800;
-	int screenHeight = 450;
+	int screenWidth = 1024;
+	int screenHeight = 760;
 
 	InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+	m_camera->offset = { (float)screenWidth / 2, (float)screenHeight / 2 };
+	m_camera->target = { (float)screenWidth / 2, (float)screenHeight / 2 };
+	m_camera->zoom = 1;
 
 	SetTargetFPS(60);
-	scene1 = Scene();
-	actor = new Actor(10, 10, 5, "player.png");
-	scene1.addActor(actor);
-	m_currentSceneIndex = addScene(&scene1);
 }
 
 void Game::update(float deltaTime)
@@ -32,6 +41,7 @@ void Game::draw()
 {
 	BeginDrawing();
 
+	BeginMode2D(*m_camera);
 	ClearBackground(RAYWHITE);
 
 	for (int i = 0; i < m_sceneCount; i++)
@@ -39,6 +49,7 @@ void Game::draw()
 		m_scenes[i]->draw();
 	}
 
+	EndMode2D();
 	EndDrawing();
 }
 
@@ -64,14 +75,6 @@ void Game::run()
 	}
 
 	end();
-}
-
-Game::Game()
-{
-	m_gameOver = false;
-	m_scenes = new Scene*;
-	m_currentSceneIndex = 0;
-	m_sceneCount = 0;
 }
 
 Scene* Game::getScene(int index)
