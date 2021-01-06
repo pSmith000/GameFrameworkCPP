@@ -1,8 +1,9 @@
 #pragma once
 
-#include "raylib.h"
 #include <Vector2.h>
 #include <Matrix3.h>
+
+class Sprite;
 
 class Actor
 {
@@ -15,9 +16,13 @@ public:
 
     /// <param name="x">Position on the x axis</param>
     /// <param name="y">Position on the y axis</param>
-    /// <param name="rayColor">The color of the symbol that will appear when drawn to raylib</param>
     /// <param name="icon">The symbol that will appear when drawn</param>
-    Actor(float x, float y, Color rayColor, float collisionRadius, char icon = ' ');
+    Actor(float x, float y, float collisionRadius, Sprite* sprite);
+
+    /// <param name="x">Position on the x axis</param>
+    /// <param name="y">Position on the y axis</param>
+    /// <param name="icon">The symbol that will appear when drawn</param>
+    Actor(float x, float y, float collisionRadius, const char* spriteFilePath);
 
     bool getStarted() { return m_started; }
     Actor* getParent() { return m_parent; }
@@ -94,7 +99,6 @@ protected:
     MathLibrary::Matrix3* m_scale;
     Actor** m_children;
     MathLibrary::Vector2 m_velocity;
-    Color m_rayColor;
     char m_icon;
 
 private:
@@ -102,5 +106,6 @@ private:
     float m_collisionRadius;
     Actor* m_parent;
     int m_childCount;
+    Sprite* m_sprite;
 };
 

@@ -1,7 +1,8 @@
 
 #include <cmath>
 #include "Actor.h"
-
+#include "raylib.h"
+#include "Sprite.h"
 
 Actor::Actor(float x, float y, float collisionRadius, char icon)
 {
@@ -11,7 +12,6 @@ Actor::Actor(float x, float y, float collisionRadius, char icon)
     m_translation = new MathLibrary::Matrix3();
     m_scale = new MathLibrary::Matrix3();
 
-    m_rayColor = RAYLIB_H::WHITE;
     m_icon = icon;
     setLocalPosition(MathLibrary::Vector2(x,y));
     m_velocity = MathLibrary::Vector2();
@@ -19,9 +19,14 @@ Actor::Actor(float x, float y, float collisionRadius, char icon)
     m_childCount = 0;
 }
 
-Actor::Actor(float x, float y, Color rayColor, float collisionRadius, char icon) : Actor::Actor(x, y, collisionRadius, icon)
+Actor::Actor(float x, float y, float collisionRadius, Sprite* sprite) : Actor(x, y, collisionRadius)
 {
-    m_rayColor = rayColor;
+    m_sprite = sprite;
+}
+
+Actor::Actor(float x, float y, float collisionRadius, const char* spriteFilePath) : Actor(x, y, collisionRadius)
+{
+    m_sprite = new Sprite(spriteFilePath);
 }
 
 MathLibrary::Vector2 Actor::getForward()
@@ -238,7 +243,7 @@ void Actor::update(float deltaTime)
 
 void Actor::draw()
 {
-    DrawCircle(getWorldPosition().x * 32, getWorldPosition().y * 32, 50, BLUE);
+    //DrawCircle(getWorldPosition().x * 32, getWorldPosition().y * 32, 50, BLUE);
     //Draws the actor and a line indicating it facing to the raylib window
     DrawLine(
         (int)(getWorldPosition().x * 32),
@@ -247,6 +252,7 @@ void Actor::draw()
         (int)((getWorldPosition().y + getForward().y) * 32),
         WHITE
     );
+    m_sprite->draw(*m_globalTransform);
     //Raylib.DrawCircleLines((int)(WorldPosition.X * 32), (int)(WorldPosition.Y * 32), _collisionRadius * 32, _rayColor);
 }
 

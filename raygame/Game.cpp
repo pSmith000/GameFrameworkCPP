@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "raylib.h"
 
 bool Game::m_gameOver = false;
 Scene** Game::m_scenes = new Scene*;
@@ -14,7 +15,7 @@ void Game::start()
 
 	SetTargetFPS(60);
 	scene1 = Scene();
-	actor = new Actor(10, 10, 5, 'f');
+	actor = new Actor(10, 10, 5, "player.png");
 	scene1.addActor(actor);
 	m_currentSceneIndex = addScene(&scene1);
 }
