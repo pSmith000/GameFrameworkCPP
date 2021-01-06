@@ -12,17 +12,17 @@ public:
     /// <param name="x">Position on the x axis</param>
     /// <param name="y">Position on the y axis</param>
     /// <param name="icon">The symbol that will appear when drawn</param>
-    Actor(float x, float y, float collisionRadius, char icon = ' ');
+    Actor(float x, float y, float collisionRadius, char icon, float maxSpeed);
 
     /// <param name="x">Position on the x axis</param>
     /// <param name="y">Position on the y axis</param>
     /// <param name="icon">The symbol that will appear when drawn</param>
-    Actor(float x, float y, float collisionRadius, Sprite* sprite);
+    Actor(float x, float y, float collisionRadius, Sprite* sprite, float maxSpeed);
 
     /// <param name="x">Position on the x axis</param>
     /// <param name="y">Position on the y axis</param>
     /// <param name="icon">The symbol that will appear when drawn</param>
-    Actor(float x, float y, float collisionRadius, const char* spriteFilePath);
+    Actor(float x, float y, float collisionRadius, const char* spriteFilePath, float maxSpeed);
 
     bool getStarted() { return m_started; }
     Actor* getParent() { return m_parent; }
@@ -37,6 +37,8 @@ public:
 
     MathLibrary::Vector2 getVelocity();
     void setVelocity(MathLibrary::Vector2 value);
+    MathLibrary::Vector2 getAcceleration();
+    void setAcceleration(MathLibrary::Vector2 value);
 
     virtual void start();
 
@@ -99,6 +101,8 @@ protected:
     MathLibrary::Matrix3* m_scale;
     Actor** m_children;
     MathLibrary::Vector2 m_velocity;
+    MathLibrary::Vector2 m_acceleration;
+    float m_maxSpeed;
     char m_icon;
 
 private:
