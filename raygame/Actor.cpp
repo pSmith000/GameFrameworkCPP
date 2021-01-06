@@ -4,7 +4,7 @@
 #include "raylib.h"
 #include "Sprite.h"
 
-Actor::Actor(float x, float y, float collisionRadius, char icon)
+Actor::Actor(float x, float y, float collisionRadius, char icon = ' ', float maxSpeed = 1)
 {
     m_globalTransform = new MathLibrary::Matrix3();
     m_localTransform = new MathLibrary::Matrix3();
@@ -17,14 +17,15 @@ Actor::Actor(float x, float y, float collisionRadius, char icon)
     m_velocity = MathLibrary::Vector2();
     m_collisionRadius = collisionRadius;
     m_childCount = 0;
+    m_maxSpeed = maxSpeed;
 }
 
-Actor::Actor(float x, float y, float collisionRadius, Sprite* sprite) : Actor(x, y, collisionRadius)
+Actor::Actor(float x, float y, float collisionRadius, Sprite* sprite, float maxSpeed = 1) : Actor(x, y, collisionRadius, ' ', maxSpeed)
 {
     m_sprite = sprite;
 }
 
-Actor::Actor(float x, float y, float collisionRadius, const char* spriteFilePath) : Actor(x, y, collisionRadius)
+Actor::Actor(float x, float y, float collisionRadius, const char* spriteFilePath, float maxSpeed = 1) : Actor(x, y, collisionRadius, ' ', maxSpeed)
 {
     m_sprite = new Sprite(spriteFilePath);
 }
@@ -75,6 +76,16 @@ MathLibrary::Vector2 Actor::getVelocity()
 void Actor::setVelocity(MathLibrary::Vector2 value)
 {
     m_velocity = value;
+}
+
+MathLibrary::Vector2 Actor::getAcceleration()
+{
+	return m_acceleration;
+}
+
+void Actor::setAcceleration(MathLibrary::Vector2 value)
+{
+    m_acceleration = value;
 }
 
 void Actor::start()
@@ -171,7 +182,6 @@ bool Actor::removeChild(Actor* child)
     return actorRemoved;
 }
 
-
 void Actor::setScale(MathLibrary::Vector2 scale)
 {
     *m_scale = MathLibrary::Matrix3::createScale(scale);
@@ -236,6 +246,11 @@ void Actor::update(float deltaTime)
     *m_localTransform = *m_translation * *m_rotation * *m_scale;
 
     updateGlobalTransform();
+
+    setVelocity(m_velocity + m_acceleration);
+
+    if (m_velocity.getMagnitude() > m_maxSpeed)
+        m_velocity = m_velocity.getNormalized() * m_maxSpeed;
 
     //Increase position by the current velocity
     translate(m_velocity * deltaTime);
