@@ -1,9 +1,11 @@
 #include "Player.h"
 #include "Game.h"
+#include "Scene.h"
 #include "raylib.h"
 #include <iostream>
+#include "Bullet.h"
 
-Player::Player(float x, float y, float collisionRadius, const char* spriteFilePath) : Actor(x, y, collisionRadius, spriteFilePath)
+Player::Player(float x, float y, float collisionRadius, const char* spriteFilePath, float maxSpeed = 1) : Actor(x, y, collisionRadius, spriteFilePath, maxSpeed)
 {
 }
 
@@ -13,10 +15,14 @@ void Player::update(float deltatime)
     int xDirection = -Game::getKeyDown(KEY_A) + Game::getKeyDown(KEY_D);
     int yDirection = -Game::getKeyDown(KEY_W) + Game::getKeyDown(KEY_S);
     
-    setVelocity(MathLibrary::Vector2(xDirection, yDirection));
+    setAcceleration(MathLibrary::Vector2(xDirection, yDirection));
 
     if (getVelocity().getMagnitude() > 0)
         lookAt(getWorldPosition() + getVelocity().getNormalized());
+
+    if (Game::getKeyPressed(KEY_SPACE))
+        Game::getCurrentScene()->addActor(new Bullet(
+            getWorldPosition().x, getWorldPosition().y, 2, "Images/bullet.png", 5, getForward() * 5));
 
     Actor::update(deltatime);
 }

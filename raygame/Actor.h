@@ -9,6 +9,7 @@ class Actor
 {
 public:
     Actor() {}
+    ~Actor();
     /// <param name="x">Position on the x axis</param>
     /// <param name="y">Position on the y axis</param>
     /// <param name="icon">The symbol that will appear when drawn</param>
