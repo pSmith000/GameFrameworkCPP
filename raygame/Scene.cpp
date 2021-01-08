@@ -164,7 +164,3 @@ void Scene::end()
     m_started = false;
 }
 
-void Scene::destroy(Actor* actor)
-{
-    
-}

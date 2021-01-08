@@ -202,11 +202,6 @@ void Actor::rotate(float radians)
     *m_rotation = *m_rotation * MathLibrary::Matrix3::createRotation(radians);
 }
 
-void Actor::translate(MathLibrary::Vector2 value)
-{
-    *m_translation = *m_translation * MathLibrary::Matrix3::createTranslation(value);
-}
-
 void Actor::lookAt(MathLibrary::Vector2 position)
 {
     //Find the direction that the actor should look in
@@ -253,7 +248,7 @@ void Actor::update(float deltaTime)
         m_velocity = m_velocity.getNormalized() * m_maxSpeed;
 
     //Increase position by the current velocity
-    translate(m_velocity * deltaTime);
+    setLocalPosition(m_velocity * deltaTime);
 }
 
 void Actor::draw()

@@ -22,6 +22,7 @@ public:
     /// <returns></returns>
     static Scene* getCurrentScene();
 
+    /// <returns>The index of the current scene in the game's array of scenes.</returns>
     static int getCurrentSceneIndex();
 
     /// <summary>
@@ -62,8 +63,19 @@ public:
     /// <returns></returns>
     static bool getKeyPressed(int key);
 
+    /// <summary>
+    /// Removes the actor from the scene, removes it from its parent, calls its end function, and deletes the actor.
+    /// </summary>
+    /// <param name="actor">The actor that will be deleted.</param>
     static void destroy(Actor* actor);
+
+    /// <summary>
+    /// Sets the game state to be the given value. If true, the game will end.
+    /// </summary>
+    /// <param name="value">The value to set game over.</param>
     static void setGameOver(bool value);
+
+    /// <returns>The world matrix of the current scene.</returns>
     static MathLibrary::Matrix3* getWorld();
     void run();
 
