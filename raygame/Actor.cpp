@@ -4,6 +4,17 @@
 #include "raylib.h"
 #include "Sprite.h"
 
+Actor::~Actor()
+{
+    delete m_globalTransform;
+    delete m_localTransform;
+    delete m_rotation;
+    delete m_translation;
+    delete m_scale;
+    delete[] m_children;
+    delete m_sprite;
+}
+
 Actor::Actor(float x, float y, float collisionRadius, char icon = ' ', float maxSpeed = 1)
 {
     m_globalTransform = new MathLibrary::Matrix3();
@@ -246,9 +257,9 @@ void Actor::update(float deltaTime)
 
     if (m_velocity.getMagnitude() > m_maxSpeed)
         m_velocity = m_velocity.getNormalized() * m_maxSpeed;
-
+    
     //Increase position by the current velocity
-    setLocalPosition(m_velocity * deltaTime);
+    setLocalPosition(getLocalPosition() + m_velocity * deltaTime);
 }
 
 void Actor::draw()

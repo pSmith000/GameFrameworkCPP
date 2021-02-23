@@ -4,6 +4,12 @@
 #include "raylib.h"
 #include <cmath>
 
+Sprite::~Sprite()
+{
+    RAYLIB_H::UnloadTexture(*m_texture);
+    delete m_texture;
+}
+
 Sprite::Sprite(Texture2D* texture)
 {
     m_texture = texture;

@@ -9,6 +9,8 @@ class Actor
 {
 public:
     Actor() {}
+    ~Actor();
+
     /// <param name="x">Position on the x axis</param>
     /// <param name="y">Position on the y axis</param>
     /// <param name="collisionRadius">The size of the circle surrounding the actor that will be used to detect collisions.</param>
