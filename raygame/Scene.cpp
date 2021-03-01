@@ -118,7 +118,7 @@ void Scene::checkCollision()
             if (i >= m_actorCount)
                 break;
 
-            if (m_actors[i]->checkCollision(m_actors[j]) && i != j)
+            if (m_actors[i]->checkCollision(m_actors[j]) && m_actors[i] != m_actors[j])
                 m_actors[i]->onCollision(m_actors[j]);
         }
     }

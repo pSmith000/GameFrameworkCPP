@@ -164,6 +164,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Images\bullet.png" />
+    <Image Include="Images\enemy.png" />
     <Image Include="Images\player.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
