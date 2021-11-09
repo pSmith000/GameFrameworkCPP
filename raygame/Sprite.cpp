@@ -43,26 +43,24 @@ void Sprite::setHeight(int value)
 void Sprite::draw(MathLibrary::Matrix3 transform)
 {
     //Finds the scale of the sprite
-    float xMagnitude = (float)round(MathLibrary::Vector2(transform.m11, transform.m21).getMagnitude());
-    float yMagnitude = (float)round(MathLibrary::Vector2(transform.m12, transform.m22).getMagnitude());
+    float xMagnitude = (float)round(MathLibrary::Vector2(transform.m00, transform.m10).getMagnitude());
+    float yMagnitude = (float)round(MathLibrary::Vector2(transform.m01, transform.m11).getMagnitude());
     setWidth((int)xMagnitude);
     setHeight((int)yMagnitude);
 
     //Sets the sprite center to the transform origin
-    MathLibrary::Vector2 pos = MathLibrary::Vector2(transform.m13, transform.m23);
-    MathLibrary::Vector2 forward = MathLibrary::Vector2(transform.m11, transform.m21);
-    MathLibrary::Vector2 up = MathLibrary::Vector2(transform.m12, transform.m22);
+    MathLibrary::Vector2 pos = MathLibrary::Vector2(transform.m02, transform.m12);
+    MathLibrary::Vector2 forward = MathLibrary::Vector2(transform.m00, transform.m10);
+    MathLibrary::Vector2 up = MathLibrary::Vector2(transform.m01, transform.m11);
     pos = pos - (forward.getNormalized() * getWidth() / 2);
     pos = pos - (up.getNormalized() * getHeight() / 2);
 
     //Find the transform rotation in radians 
     float rotation = atan2(transform.m21, transform.m11);
-    RAYLIB_H::Vector2 rayPos = { pos.x*32, pos.y*32 };
+    RAYLIB_H::Vector2 rayPos = { pos.x, pos.y };
 
     //Draw the sprite
     RAYLIB_H::DrawTextureEx(*m_texture, rayPos,
-        (float)(rotation * 180.0f / PI), 32, WHITE);
-
-    DrawRectangleLines(rayPos.x, rayPos.y, getWidth() * 32, getHeight() * 32, RED);
+        (float)(rotation * 180.0f / PI), 1, WHITE);
 }
 

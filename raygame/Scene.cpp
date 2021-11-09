@@ -28,9 +28,9 @@ void Scene::addActor(Actor* actor)
     m_actors = appendedArray;
     m_actorCount++;
 
-    for (int i = 0; i < actor->getChildCount(); i++)
+    for (int i = 0; i < actor->getTransform()->getChildCount(); i++)
     {
-        addActor(actor->getChildren()[i]);
+        addActor(actor->getTransform()->getChildren()[i]->getOwner());
     }
 }
 
@@ -111,17 +111,6 @@ void Scene::start()
 
 void Scene::checkCollision()
 {
-    for (int i = 0; i < m_actorCount; i++)
-    {
-        for (int j = 0; j < m_actorCount; j++)
-        {
-            if (i >= m_actorCount)
-                break;
-
-            if (m_actors[i]->checkCollision(m_actors[j]) && i != j)
-                m_actors[i]->onCollision(m_actors[j]);
-        }
-    }
 }
 
 void Scene::update(float deltaTime)

@@ -45,6 +45,11 @@ namespace MathLibrary
         static Vector4 normalize(Vector4 vector);
 
         /// <summary>
+        /// Changes this vector to have a magnitude of 1.
+        /// </summary>
+        Vector4 normalize();
+
+        /// <summary>
         /// Returns the dot product of the two vectors given.
         /// </summary>
         /// <param name="lhs"></param>

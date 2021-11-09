@@ -10,15 +10,13 @@
 ********************************************************************************************/
 
 #include "raylib.h"
-#include "Game.h"
+#include "Engine.h"
 #include <Vector2.h>
 
 int main()
 {
-	Game game = Game();
+	Engine game = Engine();
 
 	game.run();
-
-	Vector2 test;
 	return 0;
 }

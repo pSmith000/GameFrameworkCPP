@@ -9,7 +9,7 @@ namespace MathLibrary
     {
     public:
 
-        float m11, m12, m13, m21, m22, m23, m31, m32, m33;
+        float m00, m01, m02, m10, m11, m12, m20, m21, m22;
 
         Matrix3();
 

@@ -1,73 +1,58 @@
-#include "Game.h"
+#include "Engine.h"
 #include "raylib.h"
 
-bool Game::m_gameOver = false;
-Scene** Game::m_scenes = new Scene*;
-int Game::m_sceneCount = 0;
-int Game::m_currentSceneIndex = 0;
+bool Engine::m_applicationShouldClose = false;
+Scene** Engine::m_scenes = new Scene*;
+int Engine::m_sceneCount = 0;
+int Engine::m_currentSceneIndex = 0;
 
 
-Game::Game()
+Engine::Engine()
 {
-	m_gameOver = false;
+	m_applicationShouldClose = false;
 	m_scenes = new Scene*;
 	m_camera = new Camera2D();
 	m_currentSceneIndex = 0;
 	m_sceneCount = 0;
 }
 
-void Game::start()
+void Engine::start()
 {
 	int screenWidth = 1024;
 	int screenHeight = 760;
 
-	InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
-	m_camera->offset = { (float)screenWidth / 2, (float)screenHeight / 2 };
-	m_camera->target = { (float)screenWidth / 2, (float)screenHeight / 2 };
-	m_camera->zoom = 1;
+	InitWindow(screenWidth, screenHeight, "Intro To C++");
 
 	SetTargetFPS(60);
 }
 
-void Game::update(float deltaTime)
+void Engine::update(float deltaTime)
 {
-	for (int i = 0; i < m_sceneCount; i++)
-	{
-		m_scenes[i]->update(deltaTime);
-	}
+	m_scenes[m_currentSceneIndex]->update(deltaTime);
 }
 
-void Game::draw()
+void Engine::draw()
 {
 	BeginDrawing();
 
-	BeginMode2D(*m_camera);
 	ClearBackground(RAYWHITE);
 
-	for (int i = 0; i < m_sceneCount; i++)
-	{
-		m_scenes[i]->draw();
-	}
+	m_scenes[m_currentSceneIndex]->draw();
 
-	EndMode2D();
 	EndDrawing();
 }
 
-void Game::end()
+void Engine::end()
 {
+	m_scenes[m_currentSceneIndex]->end();
 	CloseWindow();
 }
 
-MathLibrary::Matrix3* Game::getWorld()
-{
-	return getCurrentScene()->getWorld();
-}
-
-void Game::run()
+void Engine::run()
 {
 	start();
 
-	while (!m_gameOver && !RAYLIB_H::WindowShouldClose())
+	while (!m_applicationShouldClose && !RAYLIB_H::WindowShouldClose())
 	{
 		float deltaTime = RAYLIB_H::GetFrameTime();
 		update(deltaTime);
@@ -77,7 +62,7 @@ void Game::run()
 	end();
 }
 
-Scene* Game::getScene(int index)
+Scene* Engine::getScene(int index)
 {
 	if (index < 0 || index >= m_sceneCount)
 		return nullptr;
@@ -85,17 +70,17 @@ Scene* Game::getScene(int index)
 	return m_scenes[index];
 }
 
-Scene* Game::getCurrentScene()
+Scene* Engine::getCurrentScene()
 {
 	return m_scenes[m_currentSceneIndex];
 }
 
-int Game::getCurrentSceneIndex()
+int Engine::getCurrentSceneIndex()
 {
 	return m_currentSceneIndex;
 }
 
-int Game::addScene(Scene* scene)
+int Engine::addScene(Scene* scene)
 {
 	//If the scene is null then return before running any other logic
 	if (!scene)
@@ -123,7 +108,7 @@ int Game::addScene(Scene* scene)
 	return index;
 }
 
-bool Game::removeScene(Scene* scene)
+bool Engine::removeScene(Scene* scene)
 {
 	//If the scene is null then return before running any other logic
 	if (!scene)
@@ -160,7 +145,7 @@ bool Game::removeScene(Scene* scene)
 	return sceneRemoved;
 }
 
-void Game::setCurrentScene(int index)
+void Engine::setCurrentScene(int index)
 {
 	//If the index is not within the range of the the array return
 	if (index < 0 || index >= m_sceneCount)
@@ -174,26 +159,26 @@ void Game::setCurrentScene(int index)
 	m_currentSceneIndex = index;
 }
 
-bool Game::getKeyDown(int key)
+bool Engine::getKeyDown(int key)
 {
 	return RAYLIB_H::IsKeyDown((KeyboardKey)key);
 }
 
-bool Game::getKeyPressed(int key)
+bool Engine::getKeyPressed(int key)
 {
 	return RAYLIB_H::IsKeyPressed((KeyboardKey)key);
 }
 
-void Game::destroy(Actor* actor)
+void Engine::destroy(Actor* actor)
 {
 	getCurrentScene()->removeActor(actor);
-	if (actor->getParent())
-		actor->getParent()->removeChild(actor);
+	/*if (actor->getTransform()->getParent())
+		actor->getParent()->removeChild(actor);*/
 	actor->end();
 	delete actor;
 }
 
-void Game::setGameOver(bool value)
+void Engine::CloseApplication()
 {
-	Game::m_gameOver = value;
+	Engine::m_applicationShouldClose = true;
 }

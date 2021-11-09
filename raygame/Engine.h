@@ -2,10 +2,10 @@
 #include "Scene.h"
 class Camera2D;
 
-static class Game
+static class Engine
 {
 public:
-    Game();
+    Engine();
     /// <summary>
     /// Returns the scene at the index given.
     /// Returns an empty scene if the index is out of bounds
@@ -70,10 +70,9 @@ public:
     static void destroy(Actor* actor);
 
     /// <summary>
-    /// Sets the game state to be the given value. If true, the game will end.
+    /// Ends the application and closes the window.
     /// </summary>
-    /// <param name="value">The value to set game over.</param>
-    static void setGameOver(bool value);
+    static void CloseApplication();
 
     /// <returns>The world matrix of the current scene.</returns>
     static MathLibrary::Matrix3* getWorld();
@@ -87,7 +86,7 @@ private:
 
 private:
     Camera2D* m_camera;
-    static bool m_gameOver;
+    static bool m_applicationShouldClose;
 	static Scene** m_scenes;
     static int m_sceneCount;
     static int m_currentSceneIndex;
