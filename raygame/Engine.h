@@ -1,5 +1,8 @@
 #pragma once
 #include "Scene.h"
+#include <Vector2.h>
+#include <cmath>
+#include "ActorArray.h"
 class Camera2D;
 
 static class Engine
@@ -32,6 +35,8 @@ public:
     /// <returns>The index the scene was placed at. Returns -1 if
     /// the scene is null</returns>
     static int addScene(Scene* scene);
+
+    static void addActorToDeletionList(Actor* actor);
 
     /// <summary>
     /// Finds the instance of the scene given that inside of the array
@@ -69,23 +74,44 @@ public:
     /// <param name="actor">The actor that will be deleted.</param>
     static void destroy(Actor* actor);
 
+    void destroyActorsInList();
+
     /// <summary>
     /// Ends the application and closes the window.
     /// </summary>
     static void CloseApplication();
 
+    /// <returns>The world matrix of the current scene.</returns>
+    static MathLibrary::Matrix3* getWorld();
+
+    /// <summary>
+    /// Gets how wide the application window is
+    /// </summary>
+    static int getScreenWidth() { return m_screenWidth; }
+
+    /// <summary>
+    /// Gets how tall the application window is
+    /// </summary>
+    static int getScreenHeight() { return m_screenHeight; }
+
+    /// <summary>
+    /// Begins the application
+    /// </summary>
     void run();
 
 private:
-	void start();
-	void update(float delaTime);
-	void draw();
-	void end();
+    void start();
+    void update(float delaTime);
+    void draw();
+    void end();
 
 private:
     Camera2D* m_camera;
     static bool m_applicationShouldClose;
-	static Scene** m_scenes;
+    static Scene** m_scenes;
     static int m_sceneCount;
+    static ActorArray m_actorsToDelete;
     static int m_currentSceneIndex;
+    static const int m_screenWidth = 700;
+    static const int m_screenHeight = 800;
 };

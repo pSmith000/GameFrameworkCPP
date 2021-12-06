@@ -4,7 +4,7 @@
 Scene::Scene()
 {
     m_actorCount = 0;
-    m_actors = new Actor*[0];
+    m_actors = ActorArray();
     m_world = new MathLibrary::Matrix3();
 }
 
@@ -13,96 +13,46 @@ MathLibrary::Matrix3* Scene::getWorld()
     return m_world;
 }
 
-void Scene::addActor(Actor* actor)
+void Scene::addUIElement(Actor* actor)
 {
-    //Create a new array with a size one greater than our old array
-    Actor** appendedArray = new Actor * [m_actorCount + 1];
-    //Copy the values from the old array to the new array
-    for (int i = 0; i < m_actorCount; i++)
-    {
-        appendedArray[i] = m_actors[i];
-    }
+    m_UIElements.addActor(actor);
 
-    //Set the last value in the new array to be the actor we want to add
-    appendedArray[m_actorCount] = actor;
-    //Set old array to hold the values of the new array
-    m_actors = appendedArray;
-    m_actorCount++;
-
+    //Adds all children of the UI to the scene
     for (int i = 0; i < actor->getTransform()->getChildCount(); i++)
     {
-        addActor(actor->getTransform()->getChildren()[i]->getOwner());
+        m_UIElements.addActor(actor->getTransform()->getChildren()[i]->getOwner());
+    }
+}
+
+bool Scene::removeUIElement(int index)
+{
+    return m_UIElements.removeActor(index);
+}
+
+bool Scene::removeUIElement(Actor* actor)
+{
+    return m_UIElements.removeActor(actor);
+}
+
+void Scene::addActor(Actor* actor)
+{
+    m_actors.addActor(actor);
+
+    //Adds all children of the actor to the scene
+    for (int i = 0; i < actor->getTransform()->getChildCount(); i++)
+    {
+        m_actors.addActor(actor->getTransform()->getChildren()[i]->getOwner());
     }
 }
 
 bool Scene::removeActor(int index)
 {
-    //Check to see if the index is outside the bounds of our array
-    if (index < 0 || index >= m_actorCount)
-    {
-        return false;
-    }
-
-    bool actorRemoved = false;
-
-    //Create a new array with a size one less than our old array 
-    Actor** newArray = new Actor * [m_actorCount - 1];
-    //Create variable to access tempArray index
-    int j = 0;
-    //Copy values from the old array to the new array
-    for (int i = 0; i < m_actorCount; i++)
-    {
-        //If the current index is not the index that needs to be removed,
-        //add the value into the old array and increment j
-        if (i != index)
-        {
-            newArray[j] = m_actors[i];
-            j++;
-        }
-        else
-        {
-            delete m_actors[i];
-            actorRemoved = true;
-        }
-    }
-
-    //Set the old array to be the tempArray
-    m_actors = newArray;
-    m_actorCount--;
-    return actorRemoved;
+    return m_actors.removeActor(index);
 }
 
 bool Scene::removeActor(Actor* actor)
 {
-    //Check to see if the actor was null
-    if (!actor)
-    {
-        return false;
-    }
-
-    bool actorRemoved = false;
-    //Create a new array with a size one less than our old array
-    Actor** newArray = new Actor * [m_actorCount - 1];
-    //Create variable to access tempArray index
-    int j = 0;
-    //Copy values from the old array to the new array
-    for (int i = 0; i < m_actorCount; i++)
-    {
-        if (actor != m_actors[i])
-        {
-            newArray[j] = m_actors[i];
-            j++;
-        }
-        else
-        {
-            actorRemoved = true;
-        }
-    }
-    //Set the old array to the new array
-    m_actors = newArray;
-    m_actorCount--;
-    //Return whether or not the removal was successful
-    return actorRemoved;
+    return m_actors.removeActor(actor);
 }
 
 void Scene::start()
@@ -110,38 +60,66 @@ void Scene::start()
     m_started = true;
 }
 
-void Scene::checkCollision()
-{
-}
-
 void Scene::update(float deltaTime)
 {
-    for (int i = 0; i < m_actorCount; i++)
+    //Updates all actors
+    for (int i = 0; i < m_actors.getLength(); i++)
     {
-        if (!m_actors[i]->getStarted())
-            m_actors[i]->start();
+        if (!m_actors.getActor(i)->getStarted())
+            m_actors.getActor(i)->start();
 
-        m_actors[i]->update(deltaTime);
+        m_actors.getActor(i)->update(deltaTime);
     }
-    checkCollision();
+
+    //Checks collision for all actors
+    for (int i = 0; i < m_actors.getLength(); i++)
+    {
+        for (int j = 0; j < m_actors.getLength(); j++)
+        {
+            if (m_actors.getActor(i)->checkForCollision(m_actors.getActor(j)) && j != i && m_actors.getActor(j)->getStarted())
+                m_actors.getActor(i)->onCollision(m_actors.getActor(j));
+        }
+    }
+}
+
+void Scene::updateUI(float deltaTime)
+{
+    //Calls update for all actors in UI array
+    for (int i = 0; i < m_UIElements.getLength(); i++)
+    {
+        if (!m_UIElements.getActor(i)->getStarted())
+            m_UIElements.getActor(i)->start();
+
+        m_UIElements.getActor(i)->update(deltaTime);
+    }
 }
 
 void Scene::draw()
 {
-    for (int i = 0; i < m_actorCount; i++)
+    //Calls draw for all actors in the array
+    for (int i = 0; i < m_actors.getLength(); i++)
     {
-        m_actors[i]->draw();
+        m_actors.getActor(i)->draw();
+    }
+}
+
+void Scene::drawUI()
+{
+    //Calls draw for all actors in UI array
+    for (int i = 0; i < m_UIElements.getLength(); i++)
+    {
+        m_UIElements.getActor(i)->draw();
     }
 }
 
 void Scene::end()
 {
-    for (int i = 0; i < m_actorCount; i++)
+    //Calls end for all actors in the array
+    for (int i = 0; i < m_actors.getLength(); i++)
     {
-        if (m_actors[i]->getStarted())
-            m_actors[i]->end();
+        if (m_actors.getActor(i)->getStarted())
+            m_actors.getActor(i)->end();
     }
 
     m_started = false;
 }
-

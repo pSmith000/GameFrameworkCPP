@@ -1,8 +1,10 @@
 #include "Engine.h"
 #include "raylib.h"
+#include "Transform2D.h"
 
 bool Engine::m_applicationShouldClose = false;
 Scene** Engine::m_scenes = new Scene*;
+ActorArray Engine::m_actorsToDelete = ActorArray();
 int Engine::m_sceneCount = 0;
 int Engine::m_currentSceneIndex = 0;
 
@@ -18,26 +20,35 @@ Engine::Engine()
 
 void Engine::start()
 {
-	int screenWidth = 1024;
-	int screenHeight = 760;
-
+	//Initialize window
+	int screenWidth = 700;
+	int screenHeight = 800;
 	InitWindow(screenWidth, screenHeight, "Intro To C++");
+	SetTargetFPS(0);
 
-	SetTargetFPS(60);
+	//Start the scene
+	m_currentSceneIndex = addScene(new Scene());
+	m_scenes[m_currentSceneIndex]->start();
 }
 
 void Engine::update(float deltaTime)
 {
+	//Clean up actors marked for destruction
+	destroyActorsInList();
+
+	//Update scene
 	m_scenes[m_currentSceneIndex]->update(deltaTime);
+	m_scenes[m_currentSceneIndex]->updateUI(deltaTime);
 }
 
 void Engine::draw()
 {
 	BeginDrawing();
 
-	ClearBackground(RAYWHITE);
+	ClearBackground(BLACK);
 
 	m_scenes[m_currentSceneIndex]->draw();
+	m_scenes[m_currentSceneIndex]->drawUI();
 
 	EndDrawing();
 }
@@ -50,12 +61,19 @@ void Engine::end()
 
 void Engine::run()
 {
+	//Create window and start scene
 	start();
 
+	//Loop while the application shouldn't end
 	while (!m_applicationShouldClose && !RAYLIB_H::WindowShouldClose())
 	{
+		//Calculate deltatime
 		float deltaTime = RAYLIB_H::GetFrameTime();
+
+		//Update scene
 		update(deltaTime);
+
+		//Draw current scene
 		draw();
 	}
 
@@ -64,6 +82,7 @@ void Engine::run()
 
 Scene* Engine::getScene(int index)
 {
+	//Return nullptr if the scene is out of bounds
 	if (index < 0 || index >= m_sceneCount)
 		return nullptr;
 
@@ -87,7 +106,7 @@ int Engine::addScene(Scene* scene)
 		return -1;
 
 	//Create a new temporary array that one size larger than the original
-	Scene** tempArray = new Scene*[m_sceneCount + 1];
+	Scene** tempArray = new Scene * [m_sceneCount + 1];
 
 	//Copy values from old array into new array
 	for (int i = 0; i < m_sceneCount; i++)
@@ -108,6 +127,22 @@ int Engine::addScene(Scene* scene)
 	return index;
 }
 
+void Engine::addActorToDeletionList(Actor* actor)
+{
+	//return if the actor is already going to be deleted
+	if (m_actorsToDelete.contains(actor))
+		return;
+
+	//Add actor to deletion list
+	m_actorsToDelete.addActor(actor);
+
+	//Add all the actors children to the deletion list
+	for (int i = 0; i < actor->getTransform()->getChildCount(); i++)
+	{
+		m_actorsToDelete.addActor(actor->getTransform()->getChildren()[i]->getOwner());
+	}
+}
+
 bool Engine::removeScene(Scene* scene)
 {
 	//If the scene is null then return before running any other logic
@@ -117,7 +152,7 @@ bool Engine::removeScene(Scene* scene)
 	bool sceneRemoved = false;
 
 	//Create a new temporary array that is one less than our original array
-	Scene** tempArray = new Scene*[m_sceneCount - 1];
+	Scene** tempArray = new Scene * [m_sceneCount - 1];
 
 	//Copy all scenes except the scene we don't want into the new array
 	int j = 0;
@@ -140,7 +175,7 @@ bool Engine::removeScene(Scene* scene)
 		m_scenes = tempArray;
 		m_sceneCount--;
 	}
-		
+
 
 	return sceneRemoved;
 }
@@ -171,11 +206,29 @@ bool Engine::getKeyPressed(int key)
 
 void Engine::destroy(Actor* actor)
 {
-	getCurrentScene()->removeActor(actor);
-	/*if (actor->getTransform()->getParent())
-		actor->getParent()->removeChild(actor);*/
-	actor->end();
-	delete actor;
+	addActorToDeletionList(actor);
+}
+
+void Engine::destroyActorsInList()
+{
+	//Iterate through deletion list
+	for (int i = 0; i < m_actorsToDelete.getLength(); i++)
+	{
+		//Remove actor from the scene
+		Actor* actorToDelete = m_actorsToDelete.getActor(i);
+		if (!getCurrentScene()->removeActor(actorToDelete))
+			getCurrentScene()->removeUIElement(actorToDelete);
+
+		//Call actors clean up functions
+		actorToDelete->end();
+		actorToDelete->onDestroy();
+
+		//Delete the actor
+		delete actorToDelete;
+	}
+
+	//Clear the array
+	m_actorsToDelete = ActorArray();
 }
 
 void Engine::CloseApplication()

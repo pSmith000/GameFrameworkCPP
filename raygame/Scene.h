@@ -1,6 +1,7 @@
 #pragma once
 #include <Matrix3.h>
 #include "Actor.h"
+#include "ActorArray.h"
 
 class Scene
 {
@@ -12,6 +13,26 @@ public:
 
     /// <returns>The scenes matrix that represents the world transform.</returns>
     MathLibrary::Matrix3* getWorld();
+
+    /// <summary>
+    /// Adds a new UI element to the scene
+    /// </summary>
+    /// <param name="actor"></param>
+    void addUIElement(Actor* actor);
+
+    /// <summary>
+    /// Removes the UI element from the scene
+    /// </summary>
+    /// <param name="index">The index of the UI element to remove</param>
+    /// <returns>False if the index is outside the bounds of the array</returns>
+    bool removeUIElement(int index);
+
+    /// <summary>
+    /// Removes the UI element from the scene
+    /// </summary>
+    /// <param name="actor">A reference to the UI element to remove</param>
+    /// <returns>False if the UI element is not in the scene</returns>
+    bool removeUIElement(Actor* actor);
 
     /// <summary>
     /// Adds the given actor to the array of actors so that the scene may call its update and draw functions.
@@ -33,23 +54,23 @@ public:
     /// <returns>False if the actor is a nullptr or isn't in the array.</returns>
     bool removeActor(Actor* actor);
 
+
+
     virtual void start();
 
-    /// <summary>
-    /// Checks if any actor has collided in scene. Calls the actors onCollision function if so.
-    /// </summary>
-    virtual void checkCollision();
-
     virtual void update(float deltaTime);
+    virtual void updateUI(float deltaTime);
 
     virtual void draw();
+    virtual void drawUI();
 
     virtual void end();
 
 private:
-    Actor** m_actors;
+    ActorArray m_actors;
+    ActorArray m_UIElements;
     MathLibrary::Matrix3* m_world;
     bool m_started;
     int m_actorCount;
+    int m_UIElementCount;
 };
-

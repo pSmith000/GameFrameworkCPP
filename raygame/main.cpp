@@ -9,12 +9,14 @@
 *
 ********************************************************************************************/
 
-#include "raylib.h"
 #include "Engine.h"
-#include <Vector2.h>
+#include <Windows.h>
 
 int main()
 {
+	//Hides Console window
+	//ShowWindow(GetConsoleWindow(), SW_HIDE);
+
 	Engine game = Engine();
 
 	game.run();
