@@ -74,8 +74,6 @@ public:
     /// </summary>
     static void CloseApplication();
 
-    /// <returns>The world matrix of the current scene.</returns>
-    static MathLibrary::Matrix3* getWorld();
     void run();
 
 private:

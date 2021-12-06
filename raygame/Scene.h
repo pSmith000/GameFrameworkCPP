@@ -1,4 +1,5 @@
 #pragma once
+#include <Matrix3.h>
 #include "Actor.h"
 
 class Scene
@@ -42,8 +43,6 @@ public:
     virtual void update(float deltaTime);
 
     virtual void draw();
-
-    virtual void debug();
 
     virtual void end();
 

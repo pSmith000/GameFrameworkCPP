@@ -1,4 +1,5 @@
 #include "Scene.h"
+#include "Transform2D.h"
 
 Scene::Scene()
 {
@@ -130,15 +131,6 @@ void Scene::draw()
     for (int i = 0; i < m_actorCount; i++)
     {
         m_actors[i]->draw();
-    }
-}
-
-void Scene::debug()
-{
-    for (int i = 0; i < m_actorCount; i++)
-    {
-        if (m_actors[i]->getStarted())
-            m_actors[i]->debug();
     }
 }
 

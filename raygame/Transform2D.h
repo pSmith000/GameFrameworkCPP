@@ -1,4 +1,3 @@
-
 #pragma once
 
 
@@ -10,13 +9,12 @@ class Actor;
 class Transform2D
 {
 
-public: 
+public:
 
     /// <param name="owner">The actor that owns this transform</param>
     Transform2D(Actor* owner);
     ~Transform2D();
-    /// <summary>
-   /// </summary>
+
    /// <returns>The current orientation of this actors z axis.</returns>
     MathLibrary::Vector2 getForward();
 
@@ -70,10 +68,10 @@ public:
     bool removeChild(Transform2D* child);
 
 
-    /// <returns>The amount of children attached to this transform.</returns>
+    /// <summary>The amount of children attached to this transform.</summary>
     int getChildCount() { return m_childCount; }
 
-    /// <returns>The array containing the children attached to this transform.</returns>
+    /// <summary>The array containing the children attached to this transform.</summary>
     Transform2D** getChildren() { return m_children; }
 
     /// <summary>
@@ -87,6 +85,9 @@ public:
     /// </summary>
     /// <param name="scale">The amount to scale the object on the x and y axis.</param>
     void scale(MathLibrary::Vector2 scale);
+
+    /// <summary>The width and height of the transform.</summary>
+    MathLibrary::Vector2 getScale();
 
     /// <summary>
     /// Set the rotation angle to be the given value in radians
@@ -108,6 +109,17 @@ public:
 
     /// <returns>Gets the actor this transform is attached to.</returns>
     Actor* getOwner() { return m_owner; }
+
+    /// <summary>
+    /// Gets the matrix that is represents this local matrix combined with
+    /// the parents global matrix
+    /// </summary>
+    MathLibrary::Matrix3* getGlobalMatrix();
+
+    /// <summary>
+    /// Gets the matrix in local space
+    /// </summary>
+    MathLibrary::Matrix3* getLocalMatrix();
 
 private:
     /// <summary>
