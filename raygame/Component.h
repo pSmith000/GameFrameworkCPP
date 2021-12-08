@@ -6,7 +6,7 @@ class Component
 public:
 	Component();
 	Component(Actor* actor, const char* name);
-	~Component();
+	~Component() ;
 
 	const char* getName();
 	Actor* getOwner();
