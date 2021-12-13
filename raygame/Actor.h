@@ -40,6 +40,41 @@ public:
     const char* getName() { return m_name; }
 
     /// <summary>
+    /// Sets the name of this actor
+    /// </summary>
+    /// <param name="name">The new actor name</param>
+    void setName(const char* name) { m_name = name; }
+
+    /// <summary>
+    /// Gets the first component instance attached to this actor that matches the name
+    /// </summary>
+    /// <param name="component">The name of the component instance</param>
+    /// <returns></returns>
+    Component* getComponent(const char* component);
+
+    /// <summary>
+    /// Adds a component to the end og the component array
+    /// </summary>
+    /// <param name="component">The new component to attach to the actor</param>
+    /// <returns>A reference to the component added to the array</returns>
+    Component* addComponent(Component* component);
+
+    /// <summary>
+    /// Removes the first instance found that matches the commponent reference 
+    /// </summary>
+    /// <param name="component">The component to remove from the array</param>
+    /// <returns>Whether or not the removal was successful</returns>
+    bool removeComponent(Component* component);
+
+    /// <summary>
+    /// Removes the first instance found that matches the commponent name 
+    /// </summary>
+    /// <param name="component">The component to remove from the array</param>
+    /// <returns>Whether or not the removal was successful</returns>
+    bool removeComponent(const char* name);
+
+
+    /// <summary>
     /// Called during the first update after an actor is added to a scene.
     /// </summary>
     virtual void start();
@@ -77,11 +112,6 @@ public:
     /// <param name="other">The actor this actor collided with.</param>
     virtual void onCollision(Actor* other);
 
-    Component* addComponent(Component* component);
-    bool removeComponent(Component* component);
-    bool removeComponent(const char* component);
-    Component* getComponent(const char* component);
-
 protected:
     const char* m_name;
 
@@ -89,7 +119,7 @@ private:
     bool m_started;
     Transform2D* m_transform;
     Collider* m_collider;
-    Component** m_comp;
-    int m_componentCount;
+    Component** m_components;
+    unsigned int m_componentCount;
 };
 
