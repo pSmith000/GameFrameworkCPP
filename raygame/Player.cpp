@@ -8,8 +8,8 @@ void Player::start()
 {
 	Actor::start();
 
-	m_inputComponent = dynamic_cast<InputComponent*>(addComponent(new InputComponent()));
-	m_moveComponent = dynamic_cast<MoveComponent*>(addComponent(new MoveComponent()));
+	m_inputComponent = addComponent<InputComponent>();
+	m_moveComponent = addComponent<MoveComponent>();
 	m_moveComponent->setMaxSpeed(10);
 	m_spriteComponent = dynamic_cast<SpriteComponent*>(addComponent(new SpriteComponent("images/player.png")));
 
