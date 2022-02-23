@@ -2,6 +2,7 @@
 #include "InputComponent.h"
 #include "MoveComponent.h"
 #include "SpriteComponent.h"
+#include "Transform2D.h"
 
 void Player::start()
 {

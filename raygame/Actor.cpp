@@ -23,10 +23,6 @@ Actor::Actor(float x, float y, const char* name = "Actor")
     m_name = name;
 }
 
-
-
-
-
 Component* Actor::addComponent(Component* component)
 {
     //Return null if this component has an owner already
@@ -101,64 +97,6 @@ bool Actor::removeComponent(Component* component)
     return componentRemoved;
 }
 
-bool Actor::removeComponent(const char* name)
-{
-    //Check to see if the actor was null
-    if (!name)
-    {
-        return false;
-    }
-
-    bool componentRemoved = false;
-    Component* componentToDelete = nullptr;
-    //Create a new array with a size one less than our old array
-    Component** newArray = new Component * [m_componentCount - 1];
-    //Create variable to access tempArray index
-    int j = 0;
-    //Copy values from the old array to the new array
-    for (int i = 0; i < m_componentCount; i++)
-    {
-        if (strcmp(m_components[i]->getName(), name) == 0)
-        {
-            newArray[j] = m_components[i];
-            j++;
-        }
-        else
-        {
-            componentRemoved = true;
-            componentToDelete = m_components[i];
-        }
-    }
-
-    if (componentRemoved)
-    {
-        delete[] m_components;
-        //Set the old array to the new array
-        m_components = newArray;
-        m_componentCount--;
-        delete componentToDelete;
-    }
-    else
-        delete[] newArray;
-    
-    //Return whether or not the removal was successful
-    return componentRemoved;
-}
-
-Component* Actor::getComponent(const char* name)
-{
-    //Iterate through the component array
-    for (int i = 0; i < m_componentCount; i++)
-    {
-        //Return the component if the name is the same as the current component
-        if (strcmp(m_components[i]->getName(), name) == 0)
-        {
-            return m_components[i];
-        }
-    }
-    //Return nullptr if the component is not in the list
-    return nullptr;
-}
 
 void Actor::start()
 {
